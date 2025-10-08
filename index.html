@@ -18,14 +18,26 @@
 </head>
 <body class="bg-gray-100 text-gray-800">
 
+    <!-- Countdown Timer -->
+    <div id="countdown-container" class="fixed top-3 left-3 bg-white p-2 rounded-lg shadow-xl border border-gray-200 z-50 w-32 text-center">
+        <div id="timer-display" class="text-xl font-mono bg-gray-800 text-white rounded-md py-1 mb-2 transition-all duration-300">00:00</div>
+        <div class="flex justify-around">
+            <button data-time="5" class="bg-sky-500 hover:bg-sky-600 text-white font-semibold py-1 px-2 rounded text-xs transition-colors">5m</button>
+            <button data-time="10" class="bg-teal-500 hover:bg-teal-600 text-white font-semibold py-1 px-2 rounded text-xs transition-colors">10m</button>
+            <button data-time="15" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-1 px-2 rounded text-xs transition-colors">15m</button>
+        </div>
+        <button id="stop-btn" class="w-full mt-2 bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-2 rounded text-xs transition-colors">Parar</button>
+    </div>
+
+
     <div class="container mx-auto p-4 sm:p-6 lg:p-8">
         <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
-            <header class="bg-teal-700 text-white p-4 sm:p-8">
+            <header class="bg-gray-800 text-white p-4 sm:p-8">
                 <div class="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6">
                     <!-- El logotipo se mostrará desde un enlace web para asegurar su visibilidad -->
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Innova_Schools_logo.png" 
+                    <img src="https://innovaschools.edu.mx/wp-content/uploads/2020/10/Logo-Horizontal-Color.svg" 
                          alt="Logotipo Innova Schools" 
-                         class="h-12 sm:h-16 w-auto bg-white p-2 rounded-md"
+                         class="h-12 sm:h-16 w-auto"
                          onerror="this.onerror=null; this.src='https://placehold.co/200x60/FFFFFF/000000?text=Innova+Schools';">
                     <div class="text-center sm:text-left">
                         <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight">Sesión 1: La serpiente informática</h1>
@@ -206,6 +218,65 @@ print("- Anillos de planeta (aros de cebolla)")</code></pre>
     <script type="module">
         import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
         mermaid.initialize({ startOnLoad: true });
+    </script>
+    
+    <!-- Script para el temporizador -->
+    <script>
+        const timerDisplay = document.getElementById('timer-display');
+        const timerButtons = document.querySelectorAll('#countdown-container button[data-time]');
+        const stopButton = document.getElementById('stop-btn');
+
+        let countdownInterval;
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+        }
+        
+        function resetTimerStyles() {
+            timerDisplay.classList.remove('text-red-500', 'text-lg');
+            timerDisplay.classList.add('text-xl', 'text-white');
+            timerDisplay.classList.remove('bg-red-100');
+            timerDisplay.classList.add('bg-gray-800');
+        }
+
+        function stopTimer() {
+            clearInterval(countdownInterval);
+            timerDisplay.textContent = "00:00";
+            resetTimerStyles();
+        }
+
+        function startTimer(minutes) {
+            clearInterval(countdownInterval); 
+            resetTimerStyles();
+
+            let timeLeft = minutes * 60;
+            timerDisplay.textContent = formatTime(timeLeft);
+
+            countdownInterval = setInterval(() => {
+                timeLeft--;
+                if (timeLeft >= 0) {
+                    timerDisplay.textContent = formatTime(timeLeft);
+                }
+
+                if (timeLeft < 0) {
+                    clearInterval(countdownInterval);
+                    timerDisplay.textContent = "Game Over";
+                    timerDisplay.classList.remove('text-xl', 'text-white', 'bg-gray-800');
+                    timerDisplay.classList.add('text-red-500', 'text-lg', 'bg-red-100');
+                }
+            }, 1000);
+        }
+        
+        timerButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const minutes = parseInt(button.dataset.time, 10);
+                startTimer(minutes);
+            });
+        });
+
+        stopButton.addEventListener('click', stopTimer);
     </script>
 </body>
 </html>
