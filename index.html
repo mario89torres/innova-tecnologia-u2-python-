@@ -1,283 +1,451 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sesión 1: La serpiente informática</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        /* Estilos para el diagrama de flujo */
-        .mermaid svg {
-            margin: auto;
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sesión 1: La Serpiente Informática - Python</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    @keyframes fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    @keyframes slide-up { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes float { 0%{ transform: translateY(0);}50%{ transform: translateY(-6px);}100%{ transform: translateY(0);} }
+    @keyframes pulse-red { 0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } }
+
+    @layer utilities {
+      .animate-fade-in { animation: fade-in .6s cubic-bezier(.2,.9,.3,1) both; }
+      .animate-slide-up { animation: slide-up .55s ease both; }
+      .animate-float { animation: float 3.5s ease-in-out infinite; }
+      .animate-pulse-red { animation: pulse-red 2s infinite; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .animate-fade-in, .animate-slide-up, .animate-float, .animate-pulse-red { animation: none !important; }
+    }
+
+    /* Estilo para cuando se arrastra el widget */
+    #countdown-widget.dragging {
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      opacity: 0.95;
+      transform: scale(1.02);
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+  </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
+<body class="min-h-screen bg-[#0b1220] text-gray-100" style="font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;">
 
-    <!-- Countdown Timer -->
-    <div id="countdown-container" class="fixed top-3 left-3 bg-white p-2 rounded-lg shadow-xl border border-gray-200 z-50 w-32 text-center">
-        <div id="timer-display" class="text-xl font-mono bg-gray-800 text-white rounded-md py-1 mb-2 transition-all duration-300">00:00</div>
-        <div class="flex justify-around">
-            <button data-time="5" class="bg-sky-500 hover:bg-sky-600 text-white font-semibold py-1 px-2 rounded text-xs transition-colors">5m</button>
-            <button data-time="10" class="bg-teal-500 hover:bg-teal-600 text-white font-semibold py-1 px-2 rounded text-xs transition-colors">10m</button>
-            <button data-time="15" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-1 px-2 rounded text-xs transition-colors">15m</button>
+  <main id="presentation" class="relative min-h-screen overflow-hidden">
+
+    <section class="slide absolute inset-0 p-4 flex items-center justify-center transition-all duration-500 ease-in-out transform opacity-0 scale-95 pointer-events-none" role="group" aria-roledescription="slide" aria-label="Portada">
+      <div class="w-full max-w-5xl bg-[rgba(31,41,55,0.8)] backdrop-blur-md rounded-2xl p-8 shadow-2xl border border-[rgba(255,255,255,0.06)] text-center">
+        <div class="flex justify-center mb-4">
+            <img src="https://innovaschools.edu.mx/wp-content/uploads/2020/10/Logo-Horizontal-Color.svg" alt="Logotipo Innova Schools" class="h-16 w-auto animate-float">
         </div>
-        <button id="stop-btn" class="w-full mt-2 bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-2 rounded text-xs transition-colors">Parar</button>
-    </div>
+        <h1 class="text-4xl md:text-6xl font-extrabold leading-tight">Sesión 1: La Serpiente Informática</h1>
+        <p class="mt-4 text-lg md:text-2xl font-semibold text-gray-300">Ruta 1 | Primeros pasos en programación Python</p>
+        <p class="mt-2 text-md md:text-xl text-violet-400">Docente: Ing. Mario Alberto Torres Cruz</p>
+      </div>
+    </section>
 
+    <section class="slide absolute inset-0 p-4 flex items-center justify-center transition-all duration-500 ease-in-out transform opacity-0 scale-95 pointer-events-none" role="group" aria-roledescription="slide" aria-label="Pregunta Gancho">
+        <div class="w-full max-w-5xl bg-[rgba(31,41,55,0.8)] backdrop-blur-md rounded-2xl p-8 shadow-2xl border border-[rgba(255,255,255,0.06)] text-center">
+            <h2 class="text-3xl md:text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-violet-400 to-pink-400 mb-4">¡Espera! Antes de empezar...</h2>
+            <p class="text-lg md:text-xl italic text-gray-300">¿Alguna vez has querido diseñar el menú para el restaurante de tus sueños, o crear el lineup de tu propio festival de música? Hoy aprenderás la herramienta clave para dar el primer paso.</p>
+            
+            <p class="mt-8 text-xl font-bold text-gray-200">¿Sabías que Python es el motor detrás de muchas de tus apps favoritas?</p>
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mt-6 text-lg font-semibold">
+                <div class="p-3 rounded-lg bg-[rgba(55,65,81,0.6)] border border-gray-700/50">Instagram</div>
+                <div class="p-3 rounded-lg bg-[rgba(55,65,81,0.6)] border border-gray-700/50">Spotify</div>
+                <div class="p-3 rounded-lg bg-[rgba(55,65,81,0.6)] border border-gray-700/50">Netflix</div>
+                <div class="p-3 rounded-lg bg-[rgba(55,65,81,0.6)] border border-gray-700/50">Uber</div>
+                <div class="p-3 rounded-lg bg-[rgba(55,65,81,0.6)] border border-gray-700/50">Dropbox</div>
+                <div class="p-3 rounded-lg bg-[rgba(55,65,81,0.6)] border border-gray-700/50">Reddit</div>
+                <div class="p-3 rounded-lg bg-[rgba(55,65,81,0.6)] border border-gray-700/50">Pinterest</div>
+                <div class="p-3 rounded-lg bg-[rgba(55,65,81,0.6)] border border-gray-700/50">Google</div>
+                <div class="p-3 rounded-lg bg-[rgba(55,65,81,0.6)] border border-gray-700/50">Quora</div>
+                <div class="p-3 rounded-lg bg-[rgba(55,65,81,0.6)] border border-gray-700/50">Lyft</div>
+            </div>
+        </div>
+    </section>
 
-    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
-        <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
-            <header class="bg-gray-800 text-white p-4 sm:p-8">
-                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6">
-                    <!-- El logotipo se mostrará desde un enlace web para asegurar su visibilidad -->
-                    <img src="https://innovaschools.edu.mx/wp-content/uploads/2020/10/Logo-Horizontal-Color.svg" 
-                         alt="Logotipo Innova Schools" 
-                         class="h-12 sm:h-16 w-auto"
-                         onerror="this.onerror=null; this.src='https://placehold.co/200x60/FFFFFF/000000?text=Innova+Schools';">
-                    <div class="text-center sm:text-left">
-                        <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight">Sesión 1: La serpiente informática</h1>
-                        <p class="mt-2 text-base sm:text-lg opacity-90">Ruta 1 | Primeros pasos en programación Python</p>
-                        <p class="mt-1 text-sm sm:text-base opacity-80 font-medium">Docente: Ing. Mario Alberto Torres Cruz</p>
+    <section class="slide absolute inset-0 p-4 flex items-center justify-center transition-all duration-500 ease-in-out transform opacity-0 scale-95 pointer-events-none" role="group" aria-roledescription="slide" aria-label="Meta de Aprendizaje">
+        <div class="w-full max-w-5xl bg-[rgba(31,41,55,0.8)] backdrop-blur-md rounded-2xl p-8 shadow-2xl border border-[rgba(255,255,255,0.06)]">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-violet-400 border-b-2 border-violet-800 pb-3 mb-4">Meta de Aprendizaje</h2>
+            <p class="text-lg md:text-xl">Utilizar el comando <code class="font-mono bg-gray-900/80 text-pink-400 px-2 py-1 rounded">print</code> para imprimir mensajes estructurados en la consola, familiarizándose con la salida de texto en Python.</p>
+            <p class="text-right text-gray-400 italic mt-6 text-sm">Duración total: 75 minutos</p>
+        </div>
+    </section>
+
+    <section class="slide absolute inset-0 p-4 flex items-center justify-center transition-all duration-500 ease-in-out transform opacity-0 scale-95 pointer-events-none" role="group" aria-roledescription="slide" aria-label="Criterios de Éxito">
+        <div class="w-full max-w-5xl bg-[rgba(31,41,55,0.8)] backdrop-blur-md rounded-2xl p-8 shadow-2xl border border-[rgba(255,255,255,0.06)]">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-violet-400 border-b-2 border-violet-800 pb-3 mb-6">Criterios de Éxito</h2>
+            <ul class="space-y-4 text-lg">
+                <li class="flex items-start">
+                    <svg class="w-7 h-7 text-pink-400 mr-4 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                    <span><strong class="font-bold">Explico</strong> con mis propias palabras qué hace el comando <code class="font-mono bg-gray-900/80 text-pink-400 px-2 py-1 rounded">print</code> y cómo se usa.</span>
+                </li>
+                <li class="flex items-start">
+                    <svg class="w-7 h-7 text-pink-400 mr-4 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                    <span><strong class="font-bold">Organizo</strong> la información de un menú y escribo un código en Python que lo muestre de manera clara.</span>
+                </li>
+                <li class="flex items-start">
+                    <svg class="w-7 h-7 text-pink-400 mr-4 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                    <span><strong class="font-bold">Reviso</strong> mi programa, identifico si la información está ordenada y corrijo errores.</span>
+                </li>
+            </ul>
+        </div>
+    </section>
+    
+    <section class="slide absolute inset-0 p-4 flex items-center justify-center transition-all duration-500 ease-in-out transform opacity-0 scale-95 pointer-events-none" role="group" aria-roledescription="slide" aria-label="Instrucción">
+        <div class="w-full max-w-5xl bg-[rgba(31,41,55,0.8)] backdrop-blur-md rounded-2xl p-8 shadow-2xl border border-[rgba(255,255,255,0.06)]">
+             <div class="bg-[rgba(88,28,135,0.2)] border-l-4 border-violet-400 p-6 rounded-r-lg flex items-center space-x-6">
+                <svg class="w-16 h-16 text-violet-300 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25A2.25 2.25 0 0 1 5.25 3h13.5A2.25 2.25 0 0 1 21 5.25Z" />
+                </svg>
+                <div>
+                    <h3 class="font-extrabold text-2xl text-violet-300">¡Manos a la obra!</h3>
+                    <p class="text-lg text-gray-300 mt-1">Ahora que ya tienes los criterios de éxito en tu journal, es momento de ir a las computadoras para empezar a programar.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide absolute inset-0 p-4 flex items-center justify-center transition-all duration-500 ease-in-out transform opacity-0 scale-95 pointer-events-none" role="group" aria-roledescription="slide" aria-label="Inspiración">
+        <div class="w-full max-w-5xl bg-[rgba(31,41,55,0.8)] backdrop-blur-md rounded-2xl p-8 shadow-2xl border border-[rgba(255,255,255,0.06)]">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-violet-400 border-b-2 border-violet-800 pb-3 mb-6">Fase de Inspiración</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="p-4 rounded-lg bg-[rgba(55,65,81,0.5)]">
+                    <h3 class="text-xl font-bold text-pink-400 mb-2">Dato Curioso: ¿Por qué se llama Python?</h3>
+                    <p>El creador de Python era fan del grupo de comedia británico <strong class="font-semibold text-white">"Monty Python"</strong>. ¡Buscaba un nombre corto, único y un poco misterioso!</p>
+                </div>
+                <div class="p-4 rounded-lg bg-[rgba(55,65,81,0.5)]">
+                    <h3 class="text-xl font-bold text-pink-400 mb-2">Texto vs. Números</h3>
+                    <p>Para la computadora, hay dos tipos de datos muy diferentes:</p>
+                    <ul class="list-disc list-inside mt-2 space-y-1">
+                        <li><strong class="font-semibold text-violet-300">"Hamburguesa"</strong>: Es una <strong class="font-semibold">cadena de texto</strong>.</li>
+                        <li><strong class="font-semibold text-green-400">80</strong>: Es un <strong class="font-semibold">número</strong>, con el que sí puede hacer cálculos.</li>
+                    </ul>
+                </div>
+                <div class="p-4 rounded-lg bg-[rgba(55,65,81,0.5)]">
+                    <h4 class="font-bold text-pink-400">Si "sumas" texto... ¡se junta!</h4>
+                    <div class="bg-gray-900/80 p-3 rounded-md mt-2 font-mono text-sm">
+                        <pre><code>"Hamburguesa" + "con queso"</code></pre>
+                    </div>
+                    <div class="bg-gray-700 p-2 rounded-md mt-2 font-mono text-sm text-center">"Hamburguesacon queso"</div>
+                </div>
+                <div class="p-4 rounded-lg bg-[rgba(55,65,81,0.5)]">
+                    <h4 class="font-bold text-pink-400">Si sumas números... ¡se calculan!</h4>
+                    <div class="bg-gray-900/80 p-3 rounded-md mt-2 font-mono text-sm">
+                        <pre><code>80 + 25 + 45</code></pre>
+                    </div>
+                    <div class="bg-gray-700 p-2 rounded-md mt-2 font-mono text-sm text-center">150</div>
+                </div>
+            </div>
+            <p class="mt-6 pt-4 border-t border-gray-700">Para mostrar toda esta información en la pantalla, usaremos nuestro primer comando: <code class="font-mono bg-gray-900/80 text-pink-400 px-2 py-1 rounded">print()</code>.</p>
+        </div>
+    </section>
+
+    <section class="slide absolute inset-0 p-4 flex items-center justify-center transition-all duration-500 ease-in-out transform opacity-0 scale-95 pointer-events-none" role="group" aria-roledescription="slide" aria-label="Ejemplos de Print">
+        <div class="w-full max-w-6xl bg-[rgba(31,41,55,0.8)] backdrop-blur-md rounded-2xl p-8 shadow-2xl border border-[rgba(255,255,255,0.06)]">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-violet-400 border-b-2 border-violet-800 pb-3 mb-6">Dominando <code class="text-pink-400">print()</code>: Datos y Concatenación</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                    <div class="p-4 rounded-lg bg-[rgba(55,65,81,0.5)]">
+                        <h3 class="text-xl font-bold text-pink-400 mb-2">Con Texto (string) ✍️</h3>
+                        <p class="mb-2 text-gray-300">El texto siempre debe ir entre comillas.</p>
+                        <pre class="bg-gray-900/80 p-3 rounded font-mono text-sm"><code>print("Hola, soy un texto 🚀")</code></pre>
+                    </div>
+                    <div class="p-4 rounded-lg bg-[rgba(55,65,81,0.5)]">
+                        <h3 class="text-xl font-bold text-pink-400 mb-2">Con Números (integer y float) 🔢</h3>
+                        <p class="mb-2 text-gray-300">Los números van sin comillas para poder usarlos en cálculos.</p>
+                        <pre class="bg-gray-900/80 p-3 rounded font-mono text-sm"><code>print(2025)
+print(99.99)</code></pre>
                     </div>
                 </div>
-            </header>
+                <div class="space-y-4">
+                    <div class="p-4 rounded-lg bg-[rgba(55,65,81,0.5)]">
+                        <h3 class="text-xl font-bold text-pink-400 mb-2">Uniendo Texto con '+' 🤝</h3>
+                        <p class="mb-2 text-gray-300">El signo de más une cadenas de texto, ya sean literales o variables.</p>
+                        <pre class="bg-gray-900/80 p-3 rounded font-mono text-sm text-xs"><code># Uniendo texto literal
+print("Pizzería" + " Galáctica")
 
-            <main class="p-4 sm:p-6 md:p-8 space-y-8">
-
-                <!-- Pregunta Gancho -->
-                <section class="slide text-center bg-sky-50 p-4 sm:p-6 rounded-lg">
-                    <h2 class="text-xl sm:text-2xl font-bold text-sky-700 mb-2">¡Espera! Antes de empezar...</h2>
-                    <p class="text-base sm:text-lg italic text-gray-700">¿Alguna vez has querido diseñar el menú para el restaurante de tus sueños, o crear el lineup de tu propio festival de música? Hoy aprenderás la herramienta clave para dar el primer paso y mostrar tus ideas al mundo.</p>
-                </section>
-
-                <!-- Meta de Aprendizaje -->
-                <section class="slide">
-                    <h2 class="text-xl sm:text-2xl font-bold text-teal-600 border-b-2 border-teal-200 pb-2 mb-4">Meta de Aprendizaje</h2>
-                    <p class="text-base sm:text-lg">Utilizar el comando <code class="bg-teal-100 text-teal-800 px-2 py-1 rounded-md font-mono">print</code> para imprimir mensajes estructurados en la consola, familiarizándose con la salida de texto en Python.</p>
-                    <p class="text-right text-gray-500 italic mt-4 text-sm">Duración total: 75 minutos</p>
-                </section>
-
-                <!-- Criterios de Éxito -->
-                <section class="slide">
-                    <h2 class="text-xl sm:text-2xl font-bold text-teal-600 border-b-2 border-teal-200 pb-2 mb-4">Criterios de Éxito</h2>
-                    <ul class="space-y-3 text-base sm:text-lg">
-                        <li class="flex items-start">
-                            <svg class="w-6 h-6 text-teal-500 mr-3 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                            <span><strong class="font-semibold">Explico</strong> con mis propias palabras qué hace el comando <code class="bg-teal-100 text-teal-800 px-2 py-1 rounded-md font-mono">print</code> y cómo se usa.</span>
-                        </li>
-                        <li class="flex items-start">
-                             <svg class="w-6 h-6 text-teal-500 mr-3 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                            <span><strong class="font-semibold">Organizo</strong> la información de un menú y escribo un código en Python que lo muestre de manera clara.</span>
-                        </li>
-                        <li class="flex items-start">
-                            <svg class="w-6 h-6 text-teal-500 mr-3 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                            <span><strong class="font-semibold">Reviso</strong> mi programa, identifico si la información está ordenada y corrijo errores.</span>
-                        </li>
-                    </ul>
-                </section>
-
-                <!-- Instrucción para trabajar con computadoras -->
-                <section class="slide bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg flex items-center space-x-4">
-                    <svg class="w-10 h-10 sm:w-12 sm:h-12 text-yellow-600 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25A2.25 2.25 0 0 1 5.25 3h13.5A2.25 2.25 0 0 1 21 5.25Z" />
-                    </svg>
-                    <div>
-                        <h3 class="font-bold text-base sm:text-lg text-yellow-800">¡Manos a la obra!</h3>
-                        <p class="text-sm sm:text-base text-yellow-700">Ahora que ya tienes los criterios de éxito en tu journal, es momento de ir a las computadoras para empezar a programar.</p>
+# Uniendo variables con un espacio
+nombre = "Juan"
+apellido = "Perez"
+nombre_completo = nombre + " " + apellido
+print(nombre_completo)</code></pre>
                     </div>
-                </section>
-                
-                <!-- Inspiración -->
-                <section class="slide bg-gray-50 p-4 sm:p-6 rounded-lg">
-                    <h2 class="text-xl sm:text-2xl font-bold text-teal-600 border-b-2 border-teal-200 pb-2 mb-4">Fase de Inspiración</h2>
-                    <div class="space-y-4 text-base sm:text-lg">
-                        <div>
-                            <h3 class="text-lg sm:text-xl font-semibold mb-2 text-sky-800">Dato Curioso: ¿Por qué se llama Python?</h3>
-                            <p>El creador de Python era fan del grupo de comedia británico <strong class="font-semibold">"Monty Python"</strong>. ¡Buscaba un nombre corto, único y un poco misterioso para su nuevo lenguaje de programación!</p>
-                        </div>
-                        <div>
-                            <h3 class="text-lg sm:text-xl font-semibold mb-2 text-sky-800">Texto vs. Números: La Clave está en el Menú</h3>
-                            <p>Imagina que estás en un restaurante. La computadora no ve el menú como tú. Para ella, hay dos tipos de datos muy diferentes:</p>
-                            <ul class="list-disc list-inside mt-2 space-y-1 pl-4">
-                                <li><strong class="font-semibold text-blue-700">"Hamburguesa con queso"</strong>: Esto es una <strong class="font-semibold">cadena de texto</strong>. Son palabras o frases que solo describen algo.</li>
-                                <li><strong class="font-semibold text-green-700">80</strong>: Esto es un <strong class="font-semibold">número</strong>. Con los números, la computadora sí puede hacer cálculos.</li>
-                            </ul>
-                        </div>
-                        <div class="grid md:grid-cols-2 gap-4 mt-4">
-                            <div class="bg-red-50 p-3 rounded-lg border border-red-200">
-                                <h4 class="font-bold text-red-800">Si "sumas" texto... ¡solo se junta!</h4>
-                                <div class="bg-gray-800 text-white p-3 rounded-md mt-2 font-mono text-xs sm:text-sm">
-                                    <pre><code>"Hamburguesa" + "con queso"</code></pre>
-                                </div>
-                                <div class="bg-gray-200 p-2 rounded-md mt-2 font-mono text-xs sm:text-sm text-center">
-                                    "Hamburguesacon queso"
-                                </div>
-                            </div>
-                            <div class="bg-green-50 p-3 rounded-lg border border-green-200">
-                                <h4 class="font-bold text-green-800">Si sumas números... ¡se calculan!</h4>
-                                 <div class="bg-gray-800 text-white p-3 rounded-md mt-2 font-mono text-xs sm:text-sm">
-                                    <pre><code>80 + 25 + 45</code></pre>
-                                </div>
-                                <div class="bg-gray-200 p-2 rounded-md mt-2 font-mono text-xs sm:text-sm text-center">
-                                    150
-                                </div>
-                            </div>
-                        </div>
-                        <p class="mt-4 pt-4 border-t border-gray-200">Para mostrar toda esta información en la pantalla, usaremos nuestro primer comando: <code class="bg-teal-100 text-teal-800 px-2 py-1 rounded-md font-mono">print()</code>.</p>
+                    <div class="p-4 rounded-lg bg-[rgba(55,65,81,0.5)]">
+                        <h3 class="text-xl font-bold text-pink-400 mb-2">Uniendo Texto y Números 💡</h3>
+                        <p class="mb-2 text-gray-300">¡Hay dos formas! Con <code class="font-mono bg-gray-900/80 text-pink-400 px-1 rounded">str()</code> o usando una coma.</p>
+                        <pre class="bg-gray-900/80 p-3 rounded font-mono text-sm"><code># Forma 1: Convirtiendo el número a texto
+print("Tengo " + str(10) + " años")
+
+# Forma 2 (más fácil): Usando una coma
+print("Tengo", 10, "años")</code></pre>
                     </div>
-                </section>
+                </div>
+            </div>
+        </div>
+    </section>
 
-                <!-- Construcción -->
-                <section class="slide bg-gray-50 p-4 sm:p-6 rounded-lg">
-                    <h2 class="text-xl sm:text-2xl font-bold text-teal-600 border-b-2 border-teal-200 pb-2 mb-4">Fase de Construcción: ¡A Programar!</h2>
-                    <div class="space-y-6">
-                        <div>
-                            <h3 class="text-lg sm:text-xl font-semibold mb-2">Actividad: ¡Tu Menú en Python!</h3>
-                            <p class="text-sm sm:text-base">Es hora de convertirte en un chef digital. Usaremos el comando <code class="bg-teal-100 text-teal-800 px-2 py-1 rounded-md font-mono">print()</code> para escribir y mostrar en la consola el menú de tu restaurante favorito.</p>
-                        </div>
+    <section class="slide absolute inset-0 p-4 flex items-center justify-center transition-all duration-500 ease-in-out transform opacity-0 scale-95 pointer-events-none" role="group" aria-roledescription="slide" aria-label="Construcción">
+        <div class="w-full max-w-5xl bg-[rgba(31,41,55,0.8)] backdrop-blur-md rounded-2xl p-8 shadow-2xl border border-[rgba(255,255,255,0.06)]">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-violet-400 border-b-2 border-violet-800 pb-3 mb-6">Fase de Construcción: ¡A Programar!</h2>
+            <h3 class="text-2xl font-bold mb-2">Actividad: ¡Tu Menú en Python!</h3>
+            <p class="mb-4">Usa el comando <code class="font-mono bg-gray-900/80 text-pink-400 px-2 py-1 rounded">print()</code> para escribir y mostrar en la consola el menú de tu restaurante favorito.</p>
+            
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="p-4 rounded-lg bg-[rgba(55,65,81,0.5)]">
+                    <h4 class="font-bold text-lg text-pink-400 mb-2">1. Crea el Título</h4>
+                    <p class="text-sm mb-2">Usa `print()` para el nombre y añade decoración.</p>
+                    <pre class="bg-gray-900/80 p-2 rounded font-mono text-xs"><code>print("--- Menú Galáctico ---")
+print("======================")</code></pre>
+                </div>
+                <div class="p-4 rounded-lg bg-[rgba(55,65,81,0.5)]">
+                    <h4 class="font-bold text-lg text-pink-400 mb-2">2. Añade Secciones y Platillos</h4>
+                    <p class="text-sm mb-2">Usa más `print()` para categorías y platillos. Uno vacío crea un espacio.</p>
+                    <pre class="bg-gray-900/80 p-2 rounded font-mono text-xs"><code>print() # Línea en blanco
+print("ENTRADAS")
+print("- Dedos de queso estelar")</code></pre>
+                </div>
+            </div>
 
-                        <div>
-                            <h4 class="font-bold text-base sm:text-lg text-sky-800 mb-2">Paso a Paso:</h4>
-                            <ol class="list-decimal list-inside space-y-4 text-sm sm:text-base">
-                                <li>
-                                    <strong>Crea el Título:</strong> Empieza con un <code class="bg-gray-200 px-1 rounded font-mono">print()</code> que muestre el nombre de tu restaurante. Puedes añadir líneas decorativas para que se vea genial.
-                                    <div class="bg-gray-800 text-white p-3 rounded-lg mt-2 font-mono text-xs sm:text-sm overflow-x-auto">
-                                        <pre><code>print("--- Menú de La Pizzería Galáctica ---")
-print("====================================")</code></pre>
-                                    </div>
-                                </li>
-                                <li>
-                                    <strong>Añade las Secciones:</strong> Usa más <code class="bg-gray-200 px-1 rounded font-mono">print()</code> para las categorías como "Entradas", "Platos Fuertes" y "Postres". Un <code class="bg-gray-200 px-1 rounded font-mono">print()</code> vacío crea un espacio.
-                                    <div class="bg-gray-800 text-white p-3 rounded-lg mt-2 font-mono text-xs sm:text-sm overflow-x-auto">
-                                        <pre><code>print() # Esto crea una línea en blanco
-print("ENTRADAS")</code></pre>
-                                    </div>
-                                </li>
-                                 <li>
-                                    <strong>Lista los Platillos:</strong> Para cada sección, añade los nombres de los platillos. Puedes usar un guion o asterisco al inicio para que se vea como una lista.
-                                    <div class="bg-gray-800 text-white p-3 rounded-lg mt-2 font-mono text-xs sm:text-sm overflow-x-auto">
-                                        <pre><code>print("- Dedos de queso estelar")
-print("- Anillos de planeta (aros de cebolla)")</code></pre>
-                                    </div>
-                                </li>
-                                <li>
-                                    <strong>Ejecuta y Revisa:</strong> Corre tu programa. ¿Se ve como un menú real? Si no, ¡vuelve a tu código y ajústalo! La programación se trata de probar y corregir.
-                                </li>
-                            </ol>
-                        </div>
+            <div class="mt-4 bg-[rgba(224,153,6,0.15)] border-l-4 border-yellow-400 p-4 rounded-r-lg flex items-start space-x-3">
+                <svg class="w-6 h-6 text-yellow-300 flex-shrink-0 mt-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
+                <div>
+                    <h4 class="font-bold text-lg text-yellow-300">¡Ojo con los errores comunes!</h4>
+                    <p class="text-yellow-200">Si tu código no funciona, revisa que no te falten las comillas <strong class="font-bold">" "</strong> o los paréntesis <strong class="font-bold">( )</strong> del comando.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="slide absolute inset-0 p-4 flex items-center justify-center transition-all duration-500 ease-in-out transform opacity-0 scale-95 pointer-events-none" role="group" aria-roledescription="slide" aria-label="Diagrama de Flujo">
+        <div class="w-full max-w-5xl bg-[rgba(31,41,55,0.8)] backdrop-blur-md rounded-2xl p-8 shadow-2xl border border-[rgba(255,255,255,0.06)]">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-violet-400 border-b-2 border-violet-800 pb-3 mb-6 text-center">Diagrama de Flujo: Mi Primer Programa</h2>
+            <div class="mermaid text-center">
+                graph TD
+                    A["Inicio"] --> B{"Abrir editor de Python"};
+                    B --> C{"Crear Nuevo Proyecto"};
+                    C --> D["Usar print() para el título"];
+                    D --> E["Añadir más print() para platillos"];
+                    E --> F{"Ejecutar el programa"};
+                    F --> G{"¿El menú se ve bien?"};
+                    G -- Sí --> H["¡Felicidades! Fin"];
+                    G -- No --> I["Revisar y corregir código"];
+                    I --> F;
+            </div>
+        </div>
+    </section>
 
-                        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg flex items-start space-x-3">
-                             <svg class="w-6 h-6 text-yellow-600 flex-shrink-0 mt-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-                            </svg>
-                            <div>
-                                <h4 class="font-bold text-base sm:text-lg text-yellow-800">¡Ojo con los errores comunes!</h4>
-                                <p class="text-sm sm:text-base text-yellow-700">A todos nos pasa. Si tu código no funciona, revisa que no te falten las comillas <strong>" "</strong> al inicio y al final del texto, ni los paréntesis <strong>( )</strong> del comando print.</p>
-                            </div>
-                        </div>
+    <section class="slide absolute inset-0 p-4 flex items-center justify-center transition-all duration-500 ease-in-out transform opacity-0 scale-95 pointer-events-none" role="group" aria-roledescription="slide" aria-label="Cierre">
+        <div class="w-full max-w-5xl bg-[rgba(31,41,55,0.8)] backdrop-blur-md rounded-2xl p-8 shadow-2xl border border-[rgba(255,255,255,0.06)] text-center">
+            <h2 class="text-3xl md:text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-violet-400 to-pink-400 mb-4">Cierre y Reflexión</h2>
+            <p class="text-lg md:text-xl text-gray-300">Revisaremos juntos nuestros criterios de éxito y reflexionaremos sobre lo que logramos hoy. ¡Excelente trabajo con sus primeros programas en Python!</p>
+        </div>
+    </section>
 
-                         <div>
-                            <p class="mt-4 text-xs sm:text-sm text-gray-600"><strong>Evidencia:</strong> Tu programa en Python que imprime el menú completo, claro y ordenado.</p>
-                        </div>
-                    </div>
-                </section>
+  </main>
 
-                <!-- Diagrama de Flujo -->
-                <section class="slide">
-                    <h2 class="text-xl sm:text-2xl font-bold text-teal-600 border-b-2 border-teal-200 pb-2 mb-4">Diagrama de Flujo: Mi Primer Programa</h2>
-                    <div class="mermaid text-center">
-                        graph TD
-                            A["Inicio"] --> B{"Abrir editor de Python"};
-                            B --> C{"Crear Nuevo Proyecto"};
-                            C --> D["Usar print() para el título del menú"];
-                            D --> E["Añadir más print() para cada platillo"];
-                            E --> F{"Ejecutar el programa"};
-                            F --> G{"¿El menú se ve bien?"};
-                            G -- Sí --> H["¡Felicidades! Fin"];
-                            G -- No --> I["Revisar y corregir el código"];
-                            I --> F;
-                    </div>
-                </section>
-                
-                <!-- Cierre y Reflexión -->
-                <section class="slide text-center bg-teal-50 p-4 sm:p-6 rounded-lg">
-                    <h2 class="text-xl sm:text-2xl font-bold text-teal-600 mb-2">Cierre y Reflexión</h2>
-                    <p class="text-base sm:text-lg">Revisaremos juntos nuestros criterios de éxito y reflexionaremos sobre lo que logramos hoy. ¡Excelente trabajo con sus primeros programas en Python!</p>
-                </section>
+  <div class="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 flex items-center gap-4" role="region" aria-label="Controles de navegación">
+    <button id="prevBtn" class="inline-flex items-center gap-2 px-5 py-3 rounded-full font-bold shadow bg-gradient-to-r from-violet-600 to-pink-500 text-white disabled:opacity-50 focus:outline-none focus:ring-4 focus:ring-violet-300" aria-controls="presentation" aria-label="Anterior">ANTERIOR</button>
+    <button id="nextBtn" class="inline-flex items-center gap-2 px-5 py-3 rounded-full font-bold shadow bg-gradient-to-r from-violet-600 to-pink-500 text-white disabled:opacity-50 focus:outline-none focus:ring-4 focus:ring-violet-300" aria-controls="presentation" aria-label="Siguiente">SIGUIENTE</button>
+  </div>
 
-            </main>
+  <div id="slideCounter" class="fixed top-6 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-full text-sm font-semibold bg-[rgba(55,65,81,0.8)] border border-[rgba(255,255,255,0.06)]" aria-live="polite" aria-atomic="true"></div>
+
+  <div id="countdown-widget" class="fixed bottom-6 right-6 z-50 bg-[rgba(31,41,55,0.8)] backdrop-blur-md border border-[rgba(255,255,255,0.06)] rounded-2xl shadow-lg w-64 transition-transform, transition-box-shadow">
+    <div id="drag-handle" class="w-full h-6 bg-gray-500/30 rounded-t-xl cursor-move flex justify-center items-center group">
+        <div class="w-8 h-1 bg-gray-400/50 rounded-full group-hover:bg-gray-200 transition-colors"></div>
+    </div>
+    <div class="p-4 pt-2 flex flex-col items-center gap-3">
+        <div class="flex items-center gap-2">
+            <label for="minutes" class="font-bold text-sm">MINUTOS:</label>
+            <input type="number" id="minutes" value="10" min="1" class="bg-gray-700 text-white font-bold rounded-lg w-20 text-center p-2 border border-gray-600 focus:ring-2 focus:ring-violet-500 focus:outline-none">
+        </div>
+        <div id="countdown-display" class="text-6xl font-extrabold text-white font-mono tracking-wider">10:00</div>
+        <div class="flex items-center gap-3">
+            <button id="startBtn" class="px-4 py-2 text-sm rounded-full font-bold bg-green-500 hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed">INICIAR</button>
+            <button id="pauseBtn" class="px-4 py-2 text-sm rounded-full font-bold bg-yellow-500 hover:bg-yellow-600 disabled:opacity-50 disabled:cursor-not-allowed" disabled>PAUSAR</button>
+            <button id="resetBtn" class="px-4 py-2 text-sm rounded-full font-bold bg-red-500 hover:bg-red-600">RESET</button>
         </div>
     </div>
+  </div>
 
-    <!-- Script para renderizar el diagrama de flujo -->
-    <script type="module">
-        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-        mermaid.initialize({ startOnLoad: true });
-    </script>
-    
-    <!-- Script para el temporizador -->
-    <script>
-        const timerDisplay = document.getElementById('timer-display');
-        const timerButtons = document.querySelectorAll('#countdown-container button[data-time]');
-        const stopButton = document.getElementById('stop-btn');
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+  </script>
 
-        let countdownInterval;
+  <script>
+    // Script para la navegación de las diapositivas
+    (function(){
+      const slides = Array.from(document.querySelectorAll('.slide'));
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const counter = document.getElementById('slideCounter');
+      let current = 0;
 
-        function formatTime(seconds) {
-            const minutes = Math.floor(seconds / 60);
-            const remainingSeconds = seconds % 60;
-            return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
-        }
-        
-        function resetTimerStyles() {
-            timerDisplay.classList.remove('text-red-500', 'text-lg');
-            timerDisplay.classList.add('text-xl', 'text-white');
-            timerDisplay.classList.remove('bg-red-100');
-            timerDisplay.classList.add('bg-gray-800');
-        }
-
-        function stopTimer() {
-            clearInterval(countdownInterval);
-            timerDisplay.textContent = "00:00";
-            resetTimerStyles();
-        }
-
-        function startTimer(minutes) {
-            clearInterval(countdownInterval); 
-            resetTimerStyles();
-
-            let timeLeft = minutes * 60;
-            timerDisplay.textContent = formatTime(timeLeft);
-
-            countdownInterval = setInterval(() => {
-                timeLeft--;
-                if (timeLeft >= 0) {
-                    timerDisplay.textContent = formatTime(timeLeft);
-                }
-
-                if (timeLeft < 0) {
-                    clearInterval(countdownInterval);
-                    timerDisplay.textContent = "Game Over";
-                    timerDisplay.classList.remove('text-xl', 'text-white', 'bg-gray-800');
-                    timerDisplay.classList.add('text-red-500', 'text-lg', 'bg-red-100');
-                }
-            }, 1000);
-        }
-        
-        timerButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const minutes = parseInt(button.dataset.time, 10);
-                startTimer(minutes);
-            });
+      function setActive(i){
+        slides.forEach((s, idx) => {
+          const isActive = idx === i;
+          s.classList.toggle('opacity-0', !isActive);
+          s.classList.toggle('opacity-100', isActive);
+          s.classList.toggle('scale-95', !isActive);
+          s.classList.toggle('scale-100', isActive);
+          s.classList.toggle('pointer-events-none', !isActive);
+          s.classList.toggle('relative', isActive);
+          s.classList.toggle('absolute', !isActive);
+          s.setAttribute('aria-hidden', !isActive);
         });
+        counter.textContent = `DIAPOSITIVA ${i+1} DE ${slides.length}`;
+        prevBtn.disabled = i === 0;
+        nextBtn.disabled = i === slides.length - 1;
+      }
 
-        stopButton.addEventListener('click', stopTimer);
-    </script>
+      prevBtn.addEventListener('click', ()=> setActive(Math.max(0, current - 1)));
+      nextBtn.addEventListener('click', ()=> setActive(Math.min(slides.length - 1, current + 1)));
+
+      document.addEventListener('keydown', (e)=>{
+        if(e.key === 'ArrowRight') {
+          current = Math.min(slides.length - 1, current + 1); setActive(current);
+        } else if(e.key === 'ArrowLeft') {
+          current = Math.max(0, current - 1); setActive(current);
+        }
+      });
+
+      (function(){
+        let startX = null; const threshold = 40;
+        document.getElementById('presentation').addEventListener('touchstart', e=> startX = e.changedTouches[0].clientX, {passive:true});
+        document.getElementById('presentation').addEventListener('touchend', e=>{
+          if(startX === null) return;
+          const dx = e.changedTouches[0].clientX - startX;
+          if(dx > threshold) { current = Math.max(0, current - 1); setActive(current); }
+          else if(dx < -threshold) { current = Math.min(slides.length - 1, current + 1); setActive(current); }
+          startX = null;
+        }, {passive:true});
+      })();
+
+      setActive(0);
+      slides.forEach((s, idx) => s.addEventListener('transitionend', ()=>{ if(s.classList.contains('opacity-100')) current = idx; }));
+    })();
+
+    // Script para el Countdown Timer y la funcionalidad de arrastre
+    (function(){
+      const minutesInput = document.getElementById('minutes');
+      const display = document.getElementById('countdown-display');
+      const startBtn = document.getElementById('startBtn');
+      const pauseBtn = document.getElementById('pauseBtn');
+      const resetBtn = document.getElementById('resetBtn');
+      const widget = document.getElementById('countdown-widget');
+      const dragHandle = document.getElementById('drag-handle');
+
+      let countdownInterval = null;
+      let totalSeconds = 0;
+      let isPaused = false;
+      const alarmSound = new Audio('https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg');
+
+      function updateDisplay() {
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+        display.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      }
+
+      function tick() {
+        if (totalSeconds <= 0) {
+          clearInterval(countdownInterval);
+          alarmSound.play();
+          widget.classList.add('animate-pulse-red');
+          resetTimer(false);
+          return;
+        }
+        totalSeconds--;
+        updateDisplay();
+      }
+      
+      function startTimer() {
+        if (isPaused) {
+           isPaused = false;
+        } else {
+           totalSeconds = parseInt(minutesInput.value, 10) * 60;
+        }
+        clearInterval(countdownInterval);
+        countdownInterval = setInterval(tick, 1000);
+        widget.classList.remove('animate-pulse-red');
+        startBtn.disabled = true;
+        pauseBtn.disabled = false;
+        minutesInput.disabled = true;
+      }
+
+      function pauseTimer() {
+        isPaused = true;
+        clearInterval(countdownInterval);
+        startBtn.disabled = false;
+        pauseBtn.disabled = true;
+      }
+      
+      function resetTimer(reloadMinutes = true) {
+        clearInterval(countdownInterval);
+        isPaused = false;
+        if (reloadMinutes) {
+          totalSeconds = parseInt(minutesInput.value, 10) * 60;
+          widget.classList.remove('animate-pulse-red');
+        } else {
+          totalSeconds = 0;
+        }
+        updateDisplay();
+        startBtn.disabled = false;
+        pauseBtn.disabled = true;
+        minutesInput.disabled = false;
+      }
+
+      startBtn.addEventListener('click', startTimer);
+      pauseBtn.addEventListener('click', pauseTimer);
+      resetBtn.addEventListener('click', () => resetTimer(true));
+      minutesInput.addEventListener('change', () => resetTimer(true));
+      resetTimer();
+
+      let isDragging = false;
+      let offsetX = 0, offsetY = 0;
+
+      dragHandle.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        const widgetRect = widget.getBoundingClientRect();
+        offsetX = e.clientX - widgetRect.left;
+        offsetY = e.clientY - widgetRect.top;
+        widget.style.right = 'auto';
+        widget.style.bottom = 'auto';
+        widget.classList.add('dragging');
+        document.body.style.userSelect = 'none';
+        e.preventDefault();
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        let newX = e.clientX - offsetX;
+        let newY = e.clientY - offsetY;
+        const widgetRect = widget.getBoundingClientRect();
+        newX = Math.max(0, Math.min(newX, window.innerWidth - widgetRect.width));
+        newY = Math.max(0, Math.min(newY, window.innerHeight - widgetRect.height));
+        widget.style.left = `${newX}px`;
+        widget.style.top = `${newY}px`;
+      });
+
+      document.addEventListener('mouseup', () => {
+        if (isDragging) {
+          isDragging = false;
+          widget.classList.remove('dragging');
+          document.body.style.userSelect = '';
+        }
+      });
+    })();
+  </script>
+
 </body>
 </html>
-
